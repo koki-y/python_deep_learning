@@ -1,6 +1,5 @@
 import numpy as np
-from affine import Affine
-from sigmoid import Sigmoid
+from .layer import Affine, Sigmoid
 
 class TwoLayerNet:
     def __init__(self, input_size, hidden_size, output_size):
