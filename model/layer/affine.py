@@ -16,7 +16,7 @@ class Affine:
 
     def __init__(self, W, b):
         self.params = [W, b]
-        self.grads = [np.zeros_like(W), np.zeros_like(b)]
+        self.grads = None
         self.x = None
 
     def forward(self, x):
@@ -36,4 +36,13 @@ class Affine:
         W, b = self.params
         out = np.dot(x, W) + b
         self.x = x
+        return out
+
+    def backward(self, dout):
+        out = np.dot(dout, self.W.T)
+        dW = np.dot(self.x.T, dout)
+        db = np.sum(dout, axis=0)
+
+        grads = [dW, db]
+
         return out
