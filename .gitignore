@@ -1,4 +1,5 @@
 model/__pycache__/
 model/layer/__pycache__/
+dataset/__pycache__/
 /dataset/*.gz
 /dataset/mnist.pkl
