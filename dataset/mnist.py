@@ -26,6 +26,18 @@ test_num = 10000
 img_dim = (1, 28, 28)
 img_size = 784
 
+"""
+# How to load and show mnist images in python shell.
+> from PIL import Image
+> import numpy as np
+> (x, t), (_x_test, _t_test) = mnist.load_mnist(normalize=False, one_hot_label=False)
+> img = x[0]    # or _x_test[0]
+> img.reshape(28, 28)
+> img = Image.fromarray(np.uint8(img))
+> img.show()
+# Then, you can see the image in opened image viewer.
+# [Notice] You couldn't open image viewer if you use WSL.
+"""
 
 def _download(file_name):
     file_path = dataset_dir + "/" + file_name
