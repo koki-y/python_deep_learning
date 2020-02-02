@@ -3,4 +3,6 @@
 /dataset/__pycache__/
 /optimizer/__pycache__
 /dataset/*.gz
-/dataset/mnist.pkl
+/dataset/*.pkl
+/common/__pycache__
+/trainer/__pycache__

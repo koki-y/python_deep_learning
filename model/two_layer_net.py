@@ -28,8 +28,9 @@ class TwoLayerNet:
         return x
 
     def forward(self, x, t):
-        y = self.predict(x)
-        loss = self.loss_layer.forward(y, t)
+        for layer in self.layers:
+            x = layer.forward(x)
+        loss = self.loss_layer.forward(x, t)
         return loss 
 
     def backward(self, dout=1):
