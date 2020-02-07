@@ -6,3 +6,4 @@
 /dataset/*.pkl
 /common/__pycache__
 /trainer/__pycache__
+/__pycache__

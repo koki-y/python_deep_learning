@@ -6,8 +6,8 @@ class Trainer:
         self.optimizer = optimizer
 
 
-    def fit(self, x, t):
-        max_epoch = 1000
+    def train(self, x, t):
+        max_epoch = 10000
         batch_size = 100
 
         model = self.model
