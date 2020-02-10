@@ -23,6 +23,11 @@ class MiniBatchTrainer:
         data_digit  = ceil(log10(data_size))
 
         for epoch in range(max_epoch):
+            # Shuffle training data.
+            idx = np.random.permutation(data_size)
+            x = x[idx]
+            t = t[idx]
+
             for i in range(max_iters):
                 start, stop = batch_size*i, batch_size*(i+1)
                 # make mini-batch.
