@@ -18,5 +18,7 @@ trainer = MiniBatchTrainer(model, optimizer)
 x_data_size = x.shape[0]
 trainer.train(x=x, t=t, epoch=300, batch_size=(x_data_size//10))
 
-# Save trained model
-pickler.save(model)
+# Save trained model and sample data.
+pickler.save(model, "model_spiral")
+pickler.save(x,     "data_x_spiral")
+

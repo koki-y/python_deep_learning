@@ -19,5 +19,5 @@ x_data_size = x.shape[0]
 trainer.train(x=x, t=t, epoch=100, batch_size=(x_data_size//60))
 
 # Save trained model
-pickler.save(model)
+pickler.save(model, "model_mnist")
 
