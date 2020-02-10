@@ -1,1 +1,1 @@
-from .trainer import Trainer
+from .mini_batch_trainer import MiniBatchTrainer
