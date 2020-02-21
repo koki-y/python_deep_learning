@@ -1,11 +1,13 @@
 from math import log10, ceil
 import numpy as np
+import matplotlib.pyplot as plt
 
 class MiniBatchTrainer:
     def __init__(self, model, optimizer):
         self.model = model
         self.optimizer = optimizer
 
+        self.loss_list = []
 
     def train(self, x, t, epoch=100, batch_size=None):
         model = self.model
@@ -28,6 +30,8 @@ class MiniBatchTrainer:
             x = x[idx]
             t = t[idx]
 
+            total_loss = 0.0
+            loss_count = 0
             for i in range(max_iters):
                 start, stop = batch_size*i, batch_size*(i+1)
                 # make mini-batch.
@@ -43,4 +47,19 @@ class MiniBatchTrainer:
                 print(f'| epoch {epoch+1:{epoch_digit}d}' \
                       f'| {stop:{data_digit}d}/{data_size}' \
                       f'| loss {loss:.2f}')
+
+                total_loss += loss
+                loss_count += 1
+
+            # Store the avarage of the losses
+            self.loss_list.append(total_loss / loss_count)
+
+    def plot(self, ylim=None):
+        x = np.arange(len(self.loss_list))
+        if ylim is not None:
+            plt.ylim(*ylim)
+        plt.plot(x, self.loss_list, label='train')
+        plt.xlabel('iterations')
+        plt.ylabel('loss')
+        plt.show()
 

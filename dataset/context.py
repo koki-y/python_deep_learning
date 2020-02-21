@@ -31,7 +31,9 @@ def create_contexts_target(corpus, window_size=1):
 
     return np.array(contexts), np.array(target)
 
-def convert_one_hot(contexts, vocab_size):
+def convert_one_hot(corpus, vocab_size):
+    N = corpus.shape[0]
+
     if corpus.ndim == 1:
         one_hot = np.zeros((N, vocab_size), dtype=np.int32)
         for idx, word_id in enumerate(corpus):
@@ -46,6 +48,11 @@ def convert_one_hot(contexts, vocab_size):
 
     return one_hot
 
-def load_data():
-    pass
+def load_data(window_size=1):
+    corpus, word_to_id, id_to_word = preprocess()
+    contexts, target = create_contexts_target(corpus, window_size)
+    vocab_size = len(word_to_id)
+    target  = convert_one_hot(target, vocab_size)
+    contexts = convert_one_hot(contexts, vocab_size)
 
+    return contexts, target
