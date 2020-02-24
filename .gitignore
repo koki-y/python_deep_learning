@@ -7,3 +7,7 @@
 /common/__pycache__
 /trainer/__pycache__
 /__pycache__
+/dataset/ptb.test.npy
+/dataset/ptb.test.txt
+/dataset/ptb.train.npy
+/dataset/ptb.train.txt
