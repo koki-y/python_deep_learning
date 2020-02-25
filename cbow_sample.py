@@ -1,3 +1,4 @@
+import numpy as np
 from dataset   import ptb, context
 from model     import CBOW
 from trainer   import MiniBatchTrainer
