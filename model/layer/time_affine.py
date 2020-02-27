@@ -1,14 +1,14 @@
 import numpy as np
-from affine import Affine
+from .affine import Affine
 
 class TimeAffine:
     def __init__(self, W, b):
         self.params = [W, b]
         self.grads = [np.zeros_like(W), np.zeros_like(b)]
-        self.layer = None
+        self.x = None
 
-    def forward(self, xs):
-        N, T, _ = xs.shape
+    def forward(self, x):
+        N, T, _ = x.shape
         W, b = self.params
         
         rx = x.reshape(N * T, -1)

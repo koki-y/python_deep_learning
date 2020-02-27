@@ -1,5 +1,5 @@
 import numpy as np
-from embedding import Embedding
+from .embedding import Embedding
 
 class TimeEmbedding:
     def __init__(self, W):
@@ -8,7 +8,7 @@ class TimeEmbedding:
         self.layers = None
 
     def forward(self, idxs):
-        W = self.W
+        [W, ] = self.params
         N, T = idxs.shape
         D = W.shape[1]
 
@@ -23,7 +23,7 @@ class TimeEmbedding:
         return xs 
 
     def backward(self, douts):
-        W = self.params
+        [W,] = self.params
         N, T, D = douts.shape
         V, D = W.shape
 
