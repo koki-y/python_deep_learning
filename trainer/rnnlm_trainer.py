@@ -9,7 +9,7 @@ class RnnlmTrainer:
         self.time_idx = None
         self.loss_list = []
 
-    def train(self, xs, ts, epoch=100, batch_size=None, time_size=5):
+    def train(self, xs, ts, epoch=100, batch_size=None, time_size=5, max_grad=None):
         data_size = xs.shape[0]
 
         max_epoch = epoch
@@ -31,6 +31,8 @@ class RnnlmTrainer:
 
                 loss = model.forward(x_batch, t_batch)
                 model.backward()
+                if max_grad:
+                    clip_grads(grads, max_grad)
                 params, grads = remove_duplicate(model.params, model.grads)
                 optimizer.update(params, grads)
 
@@ -69,6 +71,17 @@ class RnnlmTrainer:
         plt.xlabel('iterations')
         plt.ylabel('loss')
         plt.show()
+
+def clip_grads(grads, max_norm):
+    total_norm = 0
+    for grad in grads:
+        total_norm += np.sum(grad ** 2)
+    total_norm = np.sqrt(total_norm)
+    
+    rate = max_norm / (total_norm + 1e-6)
+    if rate < 1:
+        for grad in grads:
+            grad *= rate
 
 def remove_duplicate(params, grads):
     '''
