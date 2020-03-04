@@ -12,7 +12,7 @@ class LSTM:
     def forward(self, x, h_prev, c_prev):
         Wx_f, Wh_f, b_f, \
         Wx_i, Wh_i, b_i, \
-        Wx_o, Wx_o, b_o, \
+        Wx_o, Wh_o, b_o, \
         Wx,   Wh,   b    = self.params
 
         f = sigmoid(np.dot(x, Wx_f) + np.dot(h_prev, Wh_f) + b_f)
@@ -21,7 +21,7 @@ class LSTM:
         g = np.tanh(np.dot(x, Wx)   + np.dot(h_prev, Wh)   + b)
 
         c_next = c_prev * f + g * i
-        h_next = tanh(c_next) * o
+        h_next = np.tanh(c_next) * o
 
         self.cache = (x, h_prev, c_prev, i, f, g, o, c_next)
         return h_next, c_next
@@ -29,7 +29,7 @@ class LSTM:
     def backward(self, dh_next, dc_next):
         Wx_f, Wh_f, b_f, \
         Wx_i, Wh_i, b_i, \
-        Wx_o, Wx_o, b_o, \
+        Wx_o, Wh_o, b_o, \
         Wx,   Wh,   b    = self.params
         x, h_prev, c_prev, i, f, g, o, c_next = self.cache
 
@@ -67,21 +67,12 @@ class LSTM:
         self.grads[10][...] = dWh
         self.grads[11][...] = db
 
-        dx_f = np.dot(df, Wx_f.T)
-        dx_i = np.dot(di, Wx_i.T)
-        dx_o = np.dot(do, Wx_o.T)
-        dx   = np.dot(dg, Wx.T)
-
-        dh_prev_f = np.dot(df, Wh_f.T)
-        dh_prev_i = np.dot(di, Wh_i.T)
-        dh_prev_o = np.dot(do, Wh_o.T)
-        dh_prev   = np.dot(dg, Wh.T)
+        dx = np.dot(df, Wx_f.T) + np.dot(di, Wx_i.T) + np.dot(do, Wx_o.T) + np.dot(dg, Wx.T)
+        dh = np.dot(df, Wh_f.T) + np.dot(di, Wh_i.T) + np.dot(do, Wh_o.T) + np.dot(dg, Wh.T)
 
         dc_prev = ds * i
-        return dx_f, dx_i, dx_o, dx, \
-               dh_prev_f, dh_prev_i, dh_prev_o, dh_prev, \
-               dc_prev
+        return dx, dh, dc_prev
 
 def sigmoid(x):
-    return 1 / (1 + np.exp(-x))
+    return 1 / (1 + np.exp(-np.clip(x,-709,100000)))
 

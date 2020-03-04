@@ -32,20 +32,22 @@ class RnnlmTrainer:
                 loss = model.forward(x_batch, t_batch)
                 model.backward()
                 if max_grad:
-                    clip_grads(grads, max_grad)
+                    clip_grads(model.grads, max_grad)
                 params, grads = remove_duplicate(model.params, model.grads)
                 optimizer.update(params, grads)
 
-                # print training loss.
-                print(f'| epoch {epoch+1:{epoch_digit}d}' \
-                      f'| {stop:{data_digit}d}/{data_size}' \
-                      f'| loss {loss:.2f}')
 
                 total_loss += loss
                 loss_count += 1
 
-            # Store the avarage of losses
-            self.loss_list.append(np.exp(total_loss / loss_count))
+                if i % 20 == 0:
+                    perplexity = np.exp(total_loss / loss_count)
+                    self.loss_list.append(perplexity)
+                    # print training loss.
+                    print(f'| epoch {epoch+1:{epoch_digit}d}' \
+                          f'| {stop:{data_digit}d}/{data_size}' \
+                          f'| perplexity {perplexity:.2f}')
+                    total_loss, loss_count = 0.0, 0
 
     def get_batch(self, x, t, batch_size, time_size):
         x_batch = np.empty((batch_size, time_size), dtype='i')

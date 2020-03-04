@@ -9,3 +9,5 @@ from .time_embedding         import TimeEmbedding
 from .negative_sampling      import NegativeSamplingLoss
 from .rnn                    import RNN
 from .time_rnn               import TimeRNN
+from .lstm                   import LSTM
+from .time_lstm              import TimeLSTM
