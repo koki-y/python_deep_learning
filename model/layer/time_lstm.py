@@ -48,16 +48,14 @@ class TimeLSTM:
 
         dxs = np.empty((N, T, D), dtype='f')
         dh, dc = 0, 0
-        grads = [0, 0, 0]
+        grads = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         for t in reversed(range(T)):
             layer = self.layers[t]
             dx, dh, dc = layer.backward(dhs[:, t, :] + dh, dc)
             dxs[:, t, :] = dx
 
-            dWx_f, dWh_f, db_f, dWx_i, dWh_i, db_i, dWx_o, dWh_o, db_o, dWx, dWh, db = layer.grads
-            grads[0] += dWx_f + dWx_i + dWx_o + dWx
-            grads[1] += dWh_f + dWh_i + dWh_o + dWh
-            grads[2] += db_f  + db_i  + db_o  + db
+            for i, grad in enumerate(layer.grads):
+                grads[i] += grad
 
         for i, grad in enumerate(grads):
             self.grads[i][...] = grad

@@ -36,10 +36,17 @@ class LSTM:
         tanh_c_next = np.tanh(c_next)
         ds = dc_next + (dh_next * o) * (1 - tanh_c_next ** 2)
 
+        dc_prev = ds * f
+
         df = ds * c_prev
         di = ds * g
         do = dh_next * tanh_c_next
         dg = ds * i
+
+        df *= f * (1 - f)
+        di *= i * (1 - i)
+        do *= o * (1 - o)
+        dg *= (1 - g ** 2)
 
         dWh_f = np.dot(h_prev.T, df)
         dWx_f = np.dot(x.T, df)
@@ -70,7 +77,6 @@ class LSTM:
         dx = np.dot(df, Wx_f.T) + np.dot(di, Wx_i.T) + np.dot(do, Wx_o.T) + np.dot(dg, Wx.T)
         dh = np.dot(df, Wh_f.T) + np.dot(di, Wh_i.T) + np.dot(do, Wh_o.T) + np.dot(dg, Wh.T)
 
-        dc_prev = ds * i
         return dx, dh, dc_prev
 
 def sigmoid(x):

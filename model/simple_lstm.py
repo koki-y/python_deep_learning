@@ -51,5 +51,5 @@ class SimpleLstm:
         return dout
 
     def reset_state(self):
-        self.rnn_layer.reset_state()
+        self.lstm_layer.reset_state()
 
