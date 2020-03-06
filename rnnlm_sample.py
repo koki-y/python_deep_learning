@@ -42,8 +42,8 @@ corpus, word_to_id, id_to_word = ptb.load_data('train')
 corpus_test, _, _ = ptb.load_data('test')
 
 vocab_size = int(max(corpus) + 1)
-xs = corpus
-ts = corpus
+xs = corpus[:-1]
+ts = corpus[1:]
 
 model = SimpleLstm(vocab_size, wordvec_size, hidden_size)
 optimizer = SGD(lr)
