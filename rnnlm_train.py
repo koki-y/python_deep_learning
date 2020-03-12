@@ -56,5 +56,6 @@ model.reset_state()
 ppl_test = eval_perplexity(model, corpus_test)
 print(f'test perplexity:{ppl_test}')
 
+model.reset_state()
 pickler.save(model, 'model_lstm')
 

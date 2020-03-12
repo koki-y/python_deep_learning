@@ -38,9 +38,13 @@ class SimpleLstm:
             self.params += layer.params
             self.grads  += layer.grads
 
-    def forward(self, xs, ts):
+    def predict(self, xs):
         for layer in self.layers:
             xs = layer.forward(xs)
+        return xs
+
+    def forward(self, xs, ts):
+        xs = self.predict(xs)
         loss = self.loss_layer.forward(xs, ts)
         return loss
 
@@ -52,4 +56,8 @@ class SimpleLstm:
 
     def reset_state(self):
         self.lstm_layer.reset_state()
+
+    def set_params(self, params):
+        for i, param in enumerate(self.params):
+            param[...] = params[i]
 

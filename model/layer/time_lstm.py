@@ -23,7 +23,8 @@ class TimeLSTM:
     def forward(self, xs):
         Wx_f, Wh_f, b_f, Wx_i, Wh_i, b_i, Wx_o, Wh_o, b_o, Wx, Wh, b = self.params
         N, T, D = xs.shape
-        D, H = Wx.shape
+        H = Wh.shape[0]
+
 
         self.layers = []
         hs = np.empty((N, T, H), dtype='f')
