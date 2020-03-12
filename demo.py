@@ -98,7 +98,6 @@ def analogy(a, b, c, word_to_id, id_to_word, word_matrix, top=5, answer=None):
         if count >= top:
             return
 
-
 def normalize(x):
     if x.ndim == 2:
         s = np.sqrt((x * x).sum(1))
@@ -106,5 +105,33 @@ def normalize(x):
     if x.ndim == 1:
         s = np.sqrt((x * x).sum())
         x /= s
+    return x
+
+def generate_sentence(lm, start_id, skip_ids=[], sentence_size=100):
+    sentence = [start_id]
+
+    x = start_id
+    while len(sentence) < sentence_size:
+        x = np.array(x).reshape(1, 1)
+        score = lm.predict(x)
+        p = softmax(score.flatten())
+
+        sampled = np.random.choice(len(p), size=1, p=p)
+
+        if sampled not in skip_ids:
+            x = sampled
+            sentence.append(int(sampled))
+
+    return sentence
+
+def softmax(x):
+    if x.ndim == 2:
+        x = x - x.max(axis=1, keepdims=True)
+        x = np.exp(x)
+        x /= x.sum(axis=1, keepdims=True)
+    elif x.ndim == 1:
+        x = x - np.max(x)
+        x = np.exp(x) / np.sum(np.exp(x))
+
     return x
 
