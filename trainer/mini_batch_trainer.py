@@ -8,7 +8,7 @@ class MiniBatchTrainer:
         self.optimizer = optimizer
         self.loss_list = []
 
-    def train(self, x, t, epoch=100, batch_size=None):
+    def train(self, x, t, epoch=100, batch_size=None, max_grad=None):
         model, optimizer = self.model, self.optimizer
 
         data_size = x.shape[0]
@@ -39,6 +39,8 @@ class MiniBatchTrainer:
 
                 loss = model.forward(x_batch, t_batch)
                 model.backward()
+                if max_grad:
+                    clip_grads(model.grads, max_grad)
                 params, grads = remove_duplicate(model.params, model.grads)
                 optimizer.update(params, grads)
 
@@ -61,6 +63,18 @@ class MiniBatchTrainer:
         plt.xlabel('iterations')
         plt.ylabel('loss')
         plt.show()
+
+def clip_grads(grads, max_norm):
+    total_norm = 0
+    for grad in grads:
+        total_norm += np.sum(grad ** 2)
+    total_norm = np.sqrt(total_norm)
+
+    rate = max_norm / (total_norm + 1e-6)
+    print(rate)
+    if rate < 1:
+        for grad in grads:
+            grad *= rate
 
 def remove_duplicate(params, grads):
     '''
