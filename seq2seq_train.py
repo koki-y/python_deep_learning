@@ -36,11 +36,12 @@ def test_addition(model, x_test, t_test):
 wordvec_size = 16
 hidden_size  = 128
 batch_size   = 128
-max_epoch    = 20
+max_epoch    = 25
 max_grad     = 5.0
 
 x, t = addition.load_data('train')
 x_test, t_test = addition.load_data('test')
+x, x_test = x[:, ::-1], x_test[:, ::-1]
 char_to_id, id_to_char = addition.get_vocab()
 
 vocab_size = len(char_to_id)
