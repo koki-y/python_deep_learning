@@ -41,6 +41,7 @@ max_grad     = 5.0
 
 x, t = addition.load_data('train')
 x_test, t_test = addition.load_data('test')
+# Reverse input data.
 x, x_test = x[:, ::-1], x_test[:, ::-1]
 char_to_id, id_to_char = addition.get_vocab()
 

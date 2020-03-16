@@ -1,6 +1,7 @@
-from .encoder import Encoder
-from .decoder import Decoder
-from .layer   import TimeSoftmaxWithLoss
+from .encoder       import Encoder
+# from .decoder       import Decoder
+from .peeky_decoder import Decoder
+from .layer         import TimeSoftmaxWithLoss
 
 class Seq2Seq:
     def __init__(self, vocab_size, wordvec_size, hidden_size):
