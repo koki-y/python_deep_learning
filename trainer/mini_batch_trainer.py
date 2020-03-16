@@ -2,13 +2,17 @@ from math import log10, ceil
 import numpy as np
 import matplotlib.pyplot as plt
 
+def do_nothing():
+    pass
+
 class MiniBatchTrainer:
     def __init__(self, model, optimizer):
         self.model = model
         self.optimizer = optimizer
         self.loss_list = []
 
-    def train(self, x, t, epoch=100, batch_size=None, max_grad=None):
+    def train(self, x, t, epoch=100, batch_size=None, max_grad=None, \
+              when_a_epoch_ended=do_nothing):
         model, optimizer = self.model, self.optimizer
 
         data_size = x.shape[0]
@@ -39,21 +43,24 @@ class MiniBatchTrainer:
 
                 loss = model.forward(x_batch, t_batch)
                 model.backward()
-                if max_grad:
-                    clip_grads(model.grads, max_grad)
                 params, grads = remove_duplicate(model.params, model.grads)
+                if max_grad:
+                    clip_grads(grads, max_grad)
                 optimizer.update(params, grads)
 
                 # print training loss.
-                print(f'| epoch {epoch+1:{epoch_digit}d}' \
-                      f'| {stop:{data_digit}d}/{data_size}' \
-                      f'| loss {loss:.2f}')
+                if i % 10 == 0:
+                    print(f'| epoch {epoch+1:{epoch_digit}d}' \
+                          f'| {stop:{data_digit}d}/{data_size}' \
+                          f'| loss {loss:.2f}')
 
                 total_loss += loss
                 loss_count += 1
 
             # Store the avarage of the losses
             self.loss_list.append(total_loss / loss_count)
+            
+            when_a_epoch_ended()
 
     def plot(self, ylim=None):
         x = np.arange(len(self.loss_list))
@@ -66,12 +73,12 @@ class MiniBatchTrainer:
 
 def clip_grads(grads, max_norm):
     total_norm = 0
-    for grad in grads:
-        total_norm += np.sum(grad ** 2)
+    for i, grad in enumerate(grads):
+        total = np.sum(grad ** 2)
+        total_norm += total
     total_norm = np.sqrt(total_norm)
 
     rate = max_norm / (total_norm + 1e-6)
-    print(rate)
     if rate < 1:
         for grad in grads:
             grad *= rate

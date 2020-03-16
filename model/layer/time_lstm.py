@@ -15,7 +15,7 @@ class TimeLSTM:
         self.stateful = stateful
 
     def set_state(self, h, c=None):
-        self.h = h, self.c = h, c
+        self.h, self.c = h, c
 
     def reset_state(self):
         self.h, self.c = None, None
@@ -24,7 +24,6 @@ class TimeLSTM:
         Wx_f, Wh_f, b_f, Wx_i, Wh_i, b_i, Wx_o, Wh_o, b_o, Wx, Wh, b = self.params
         N, T, D = xs.shape
         H = Wh.shape[0]
-
 
         self.layers = []
         hs = np.empty((N, T, H), dtype='f')

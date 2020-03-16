@@ -36,7 +36,6 @@ class RnnlmTrainer:
                 params, grads = remove_duplicate(model.params, model.grads)
                 optimizer.update(params, grads)
 
-
                 total_loss += loss
                 loss_count += 1
 

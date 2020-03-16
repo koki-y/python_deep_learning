@@ -10,14 +10,14 @@ class Seq2Seq:
         self.softmax = TimeSoftmaxWithLoss()
 
         self.params = self.encoder.params + self.decoder.params
-        self.grads = self.encoder.grads + self.decoder.grads
+        self.grads  = self.encoder.grads  + self.decoder.grads
 
     def forward(self, xs, ts):
         decoder_xs, decoder_ts = ts[:, :-1], ts[:, 1:]
 
-        h = self.encoder.forward(xs)
+        h     = self.encoder.forward(xs)
         score = self.decoder.forward(decoder_xs, h)
-        loss = self.softmax.forward(score, decoder_ts)
+        loss  = self.softmax.forward(score, decoder_ts)
         return loss
 
     def backward(self, dout=1):
