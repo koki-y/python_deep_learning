@@ -8,6 +8,9 @@ def save(obj, file_name):
         pickle.dump(obj, f, -1)
 
 def load(file_name):
-    with open(dataset_dir + f'/{file_name}.pkl', 'rb') as f:
-        return pickle.load(f)
+    try:
+        with open(dataset_dir + f'/{file_name}.pkl', 'rb') as f:
+            return pickle.load(f)
+    except FileNotFoundError:
+        return None
 

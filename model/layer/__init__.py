@@ -11,3 +11,4 @@ from .rnn                    import RNN
 from .time_rnn               import TimeRNN
 from .lstm                   import LSTM
 from .time_lstm              import TimeLSTM
+from .time_attention         import TimeAttention
