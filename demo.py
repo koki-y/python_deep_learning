@@ -135,3 +135,17 @@ def softmax(x):
 
     return x
 
+def visualize(attention_map, row_labels, column_labels):
+    fig, ax = plt.subplots()
+    ax.pcolor(attention_map, cmap=plt.cm.Greys_r, vmin=0.0, vmax=1.0)
+
+    ax.patch.set_facecolor('black')
+
+    ax.set_yticks(np.arange(attention_map.shape[0])+0.5, minor=False)
+    ax.set_xticks(np.arange(attention_map.shape[1])+0.5, minor=False)
+    ax.invert_yaxis()
+    ax.set_xticklabels(row_labels, minor=False)
+    ax.set_yticklabels(column_labels, minor=False)
+
+    plt.show()
+

@@ -4,8 +4,9 @@ from model     import AttentionSeq2Seq
 from trainer   import MiniBatchTrainer
 from optimizer import Adam
 from common    import pickler
+import demo
 
-def test_addition(model, x_test, t_test):
+def test_addition(model, x_test, t_test, is_x_reversed=False):
     colors = {'green' : '\033[92m' , 'red' : '\033[91m', 'white' : '\033[0m'}
     correct_num = 0
     for i in range(len(x_test)):
@@ -16,9 +17,13 @@ def test_addition(model, x_test, t_test):
         question = ''.join([ id_to_char[index] for index in question.flatten() ])
         sampled  = ''.join([ id_to_char[index] for index in sampled ])
         answer   = ''.join([ id_to_char[index] for index in answer ])
+
         if sampled == answer:
             correct_num += 1
+
         if i % 250 == 0:
+            if is_x_reversed:
+                question = question[::-1]
             print('')
             print(f'{question}=')
             print(f'correct: {answer}')
@@ -38,17 +43,43 @@ batch_size   = 128
 max_epoch    = 10
 max_grad     = 5.0
 
+# Load training data.
 x, t = date.load_data('train')
 x_test, t_test = date.load_data('test')
-# Reverse input data.
+## Reverse input data.
 x, x_test = x[:, ::-1], x_test[:, ::-1]
+is_x_reversed = True
+
 char_to_id, id_to_char = date.get_vocab()
 
 vocab_size = len(char_to_id)
 model = AttentionSeq2Seq(vocab_size, wordvec_size, hidden_size)
+#model = pickler.load('model_attention')
 optimizer = Adam()
 trainer = MiniBatchTrainer(model, optimizer)
 
 trainer.train(x=x, t=t, epoch=max_epoch, batch_size=batch_size, max_grad=max_grad, \
-              when_a_epoch_ended=lambda : test_addition(model, x_test, t_test))
+              when_a_epoch_ended=lambda : test_addition(model, x_test, t_test, is_x_reversed))
 
+pickler.save(model, 'model_attention')
+
+for _ in range(5):
+    idx = [ np.random.randint(0, len(x_test)) ]
+    x = x_test[idx]
+    t = t_test[idx]
+
+    model.forward(x, t)
+    d = model.decoder.attention.weights
+    d = np.array(d)
+    attention_map = d.reshape(d.shape[0], d.shape[2])
+
+    #Reverse for pring
+    if is_x_reversed:
+        attention_map = attention_map[:, ::-1]
+        x = x[:, ::-1]
+
+    row_labels    = [ id_to_char[i] for i in x[0] ]
+    column_labels = [ id_to_char[i] for i in t[0] ]
+    column_labels = column_labels[1:]
+
+    demo.visualize(attention_map, row_labels, column_labels)
