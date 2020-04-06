@@ -6,7 +6,7 @@ from optimizer import Adam
 from common    import pickler
 import demo
 
-def test_addition(model, x_test, t_test, is_x_reversed=False):
+def test(model, x_test, t_test, is_x_reversed=False):
     colors = {'green' : '\033[92m' , 'red' : '\033[91m', 'white' : '\033[0m'}
     correct_num = 0
     for i in range(len(x_test)):
@@ -37,11 +37,6 @@ def test_addition(model, x_test, t_test, is_x_reversed=False):
     print('')
     
 
-wordvec_size = 16
-hidden_size  = 256
-batch_size   = 128
-max_epoch    = 10
-max_grad     = 5.0
 
 # Load training data.
 x, t = date.load_data('train')
@@ -52,16 +47,28 @@ is_x_reversed = True
 
 char_to_id, id_to_char = date.get_vocab()
 
+# Hyper parameters
+wordvec_size = 16
+hidden_size  = 256
+batch_size   = 128
+max_epoch    = 10
+max_grad     = 5.0
 vocab_size = len(char_to_id)
-model = AttentionSeq2Seq(vocab_size, wordvec_size, hidden_size)
-#model = pickler.load('model_attention')
-optimizer = Adam()
-trainer = MiniBatchTrainer(model, optimizer)
 
-trainer.train(x=x, t=t, epoch=max_epoch, batch_size=batch_size, max_grad=max_grad, \
-              when_a_epoch_ended=lambda : test_addition(model, x_test, t_test, is_x_reversed))
+# Load trained model.
+model = pickler.load('model_attention')
 
-pickler.save(model, 'model_attention')
+if not model:
+    model = AttentionSeq2Seq(vocab_size, wordvec_size, hidden_size)
+    optimizer = Adam()
+    trainer = MiniBatchTrainer(model, optimizer)
+
+    trainer.train(x, t, max_epoch, batch_size, max_grad, \
+                  when_a_epoch_ended = lambda : test(model, x_test, t_test, is_x_reversed))
+
+    pickler.save(model, 'model_attention')
+else:
+    test(model, x_test, t_test, is_x_reversed)
 
 for _ in range(5):
     idx = [ np.random.randint(0, len(x_test)) ]
